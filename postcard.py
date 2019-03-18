@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from ruamel import yaml
+from postcard.trello import Trello
 
 def load_yaml(filename):
     with open(filename, 'r') as f:
@@ -11,6 +12,8 @@ if __name__ == "__main__":
     import os.path
     import sys
     import argparse
+    import pprint
+    pp = pprint.PrettyPrinter(indent=4)
 
     # Option handling
     parser = argparse.ArgumentParser(description='Posts cards to a Trello.com kanban board')
@@ -42,8 +45,19 @@ if __name__ == "__main__":
         sys.stderr.write("Error: api_key value missing in %s\n" %(args.config_filename))
         sys.exit(1)
 
+    BOARD = "f7JOvoPc"
+
+    trello = Trello(config['api_key'], config['oauth_token'])
+
     # Display
-    print("Card comment: %s" %(' '.join(args.comment)))
-    for label in args.labels:
-        print(" + %s" %(label))
-    print("\nAPI_KEY: %s" %(config['api_key']))
+    #print("Card comment: %s" %(' '.join(args.comment)))
+    #for label in args.labels:
+    #    print(" + %s" %(label))
+    #print("\nAPI_KEY: %s" %(config['api_key']))
+
+    print("Board:")
+    pp.pprint(trello.get_board(BOARD))
+
+    print("\nBoard Lists:")
+    board_lists = trello.get_board_lists(BOARD)
+    pp.pprint(board_lists)

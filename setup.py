@@ -16,7 +16,7 @@ setup(
     author_email     = 'bryce@ubuntu.com',
     description      = 'Inserts data to Trello.com boards',
     platforms        = ['any'],
-    requires         = ['argparse', 'ruamel'],
+    requires         = ['argparse', 'ruamel', 'pprint'],
     packages         = [
         'postcard'
         ],

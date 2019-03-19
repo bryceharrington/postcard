@@ -50,13 +50,13 @@ if __name__ == "__main__":
     trello = Trello(config['api_key'], config['oauth_token'])
 
     # Display
-    #print("Card comment: %s" %(' '.join(args.comment)))
-    #for label in args.labels:
-    #    print(" + %s" %(label))
-    #print("\nAPI_KEY: %s" %(config['api_key']))
-
     print("Board:")
-    pp.pprint(trello.get_board(BOARD))
+    board = trello.get_board(BOARD)
+    pp.pprint(board)
+
+    print("Board labels:")
+    board_labels = trello.get_board_labels(BOARD)
+    pp.pprint(board_labels)
 
     print("\nBoard Lists:")
     board_lists = trello.get_board_lists(BOARD)
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     card = trello.add_card(
         list_2['id'], "A New Card",
         desc="This is a description for our new card.",
-        pos="bottom")
+        pos="bottom",
+        labels=",".join(args.labels))
     pp.pprint(card)
-
 

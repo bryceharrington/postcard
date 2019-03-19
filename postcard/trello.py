@@ -45,6 +45,9 @@ class Trello:
             ]
         return self.retrieve_json("boards/%s" %(board_id), "fields=%s" %(','.join(fields)))
 
+    def get_board_labels(self, board_id):
+        return self.retrieve_json("boards/%s/labels" %(board_id), "fields=all")
+
     def get_board_lists(self, board_id, sort_by="pos", reverse=False):
         board_lists = self.retrieve_json("boards/%s/lists" %(board_id), "fields=all")
         if len(board_lists) < 2:
@@ -60,7 +63,6 @@ class Trello:
         return self.retrieve_json("lists/%s" %(board_id), "fields=all")
 
     def add_card(self, list_id, name, desc="", pos="top", labels=None):
-        # TODO: Verify labels are in the allowed set
         card = {
             'name': name,
             'desc': desc,

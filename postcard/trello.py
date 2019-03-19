@@ -12,6 +12,7 @@ class Trello:
         self.oauth_token = oauth_token
 
     def retrieve_json(self, api_path, api_args):
+        assert(api_path)
         assert(api_path[0] != '/')
         assert(api_args)
 
@@ -35,8 +36,16 @@ class Trello:
             ]
         return self.retrieve_json("boards/%s" %(board_id), "fields=%s" %(','.join(fields)))
 
-    def get_board_lists(self, board_id):
-        return self.retrieve_json("boards/%s/lists" %(board_id), "fields=all")
+    def get_board_lists(self, board_id, sort_by="pos", reverse=False):
+        board_lists = self.retrieve_json("boards/%s/lists" %(board_id), "fields=all")
+        if len(board_lists) < 2:
+            return board_lists
+        if sort_by is None:
+            return board_lists
+
+        # Sort the list if needed
+        assert(sort_by in board_lists[0].keys())
+        return sorted(board_lists, key=lambda k: k[sort_by], reverse=reverse)
 
     def get_list(self, list_id):
         return self.retrieve_json("lists/%s" %(board_id), "fields=all")

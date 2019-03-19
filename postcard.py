@@ -61,3 +61,17 @@ if __name__ == "__main__":
     print("\nBoard Lists:")
     board_lists = trello.get_board_lists(BOARD)
     pp.pprint(board_lists)
+
+    print("\nSecond list:")
+    list_2 = board_lists[1]
+    pp.pprint(list_2)
+
+    print("\nAdding a card:")
+    assert('id' in list_2.keys())
+    card = trello.add_card(
+        list_2['id'], "A New Card",
+        desc="This is a description for our new card.",
+        pos="bottom")
+    pp.pprint(card)
+
+

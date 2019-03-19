@@ -24,6 +24,15 @@ class Trello:
         response = r.json()
         return response
 
+    def send_post(self, api_path, api_args, params):
+        assert(api_path)
+        assert(api_path[0] != '/')
+
+        url = "%s/%s?%s&key=%s&token=%s" %(self.api_base, api_path, api_args, self.api_key, self.oauth_token)
+        r = requests.post(url, data=params)
+        r.raise_for_status()
+        return r.json()
+
     def get_board(self, board_id):
         # Limit the fields we get to avoid downloading background images, & etc.
         fields = [
@@ -49,3 +58,17 @@ class Trello:
 
     def get_list(self, list_id):
         return self.retrieve_json("lists/%s" %(board_id), "fields=all")
+
+    def add_card(self, list_id, name, desc="", pos="top", labels=None):
+        # TODO: Verify labels are in the allowed set
+        card = {
+            'name': name,
+            'desc': desc,
+            'pos': pos,
+            'idList': list_id,
+            'idLabels': labels
+        }
+        response = self.send_post("cards", "idList=%s" %(list_id), card)
+        assert(response)
+        assert('id' in response.keys())
+        return response

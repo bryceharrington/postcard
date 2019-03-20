@@ -48,6 +48,7 @@ def validate_labels(labels, acceptable_labels):
 if __name__ == "__main__":
     import os.path
     import sys
+    import re
     import argparse
     import pprint
     pp = pprint.PrettyPrinter(indent=4)
@@ -59,8 +60,8 @@ if __name__ == "__main__":
                         default="~/.config/postcard/config.yml",
                         help="Location of config file")
     parser.add_argument('-b', '--board',
-                        type=str, dest='board', action='store',
-                        help="Trello board number")
+                        type=str, dest='board', action='store', required=True,
+                        help="Trello board URL")
     parser.add_argument('-c', '--col', '--column',
                         type=int, dest='column', action='store', default=0,
                         help="Column number of the board")
@@ -82,9 +83,14 @@ if __name__ == "__main__":
         sys.stderr.write("Error: api_key value missing in %s\n" %(args.config_filename))
         sys.exit(1)
 
-    BOARD = "f7JOvoPc"
-
     trello = Trello(config['api_key'], config['oauth_token'])
+
+    # Board
+    m = re.match("^https://trello.com/b/([^/]*)/.*$", args.board)
+    if not m:
+        sys.stderr.write("Error: Unrecognized Trello board URL: %s\n", args.board)
+        sys.exit(1)
+    board = m.group(1)
 
     # Card name
     if not args.name or len(args.name)<1:
@@ -94,7 +100,7 @@ if __name__ == "__main__":
     card_name = " ".join(args.name)
 
     # Get id's for the labels
-    board_labels = trello.get_board_labels(BOARD)
+    board_labels = trello.get_board_labels(board)
     card_label_ids, invalid_labels = validate_labels(args.labels, board_labels)
     if len(invalid_labels)>0:
         sys.stderr.write("Error: Invalid label(s) %s specified\n" %(
@@ -102,7 +108,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # Select list to add the card to
-    board_lists = trello.get_board_lists(BOARD)
+    board_lists = trello.get_board_lists(board)
     if (args.column < 1) or args.column > len(board_lists)-1:
         sys.stderr.write("Error: Invalid list index %d\n" %(args.column))
         sys.exit(1)

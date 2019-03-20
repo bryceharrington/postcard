@@ -33,14 +33,12 @@ def validate_labels(labels, acceptable_labels):
     for label in labels:
         if ',' in label:
             # Bit of recursion to handle comma-separated labels
-            print(label.split(','))
             good,bad = validate_labels(label.split(','), acceptable_labels)
             card_label_ids.extend(good)
             invalid_labels.extend(bad)
         else:
             # Just a regular label
             label_id = get_id_for_label(label, board_labels)
-            print("id for %s is %s" %(label, label_id))
             if not label_id:
                 invalid_labels.append(label)
             else:
@@ -61,7 +59,7 @@ if __name__ == "__main__":
                         default="~/.config/postcard/config.yml",
                         help="Location of config file")
     parser.add_argument('-b', '--board',
-                        type=int, dest='board', action='store', default=0,
+                        type=str, dest='board', action='store',
                         help="Trello board number")
     parser.add_argument('-c', '--col', '--column',
                         type=int, dest='column', action='store', default=0,
@@ -69,8 +67,8 @@ if __name__ == "__main__":
     parser.add_argument('-l', '--label',
                         type=str, dest='labels', action='append',
                         help='Label to add to the card')
-    parser.add_argument('comment', type=str, nargs=argparse.REMAINDER,
-                        help="Card comment text")
+    parser.add_argument('name', type=str, nargs=argparse.REMAINDER,
+                        help="Card name")
     args = parser.parse_args()
 
     # Configuration
@@ -88,40 +86,36 @@ if __name__ == "__main__":
 
     trello = Trello(config['api_key'], config['oauth_token'])
 
-    # Display
-    #print("Board:")
-    board = trello.get_board(BOARD)
-    #pp.pprint(board)
+    # Card name
+    if not args.name or len(args.name)<1:
+        sys.stderr.write("Error: Must specify card's name\n")
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+    card_name = " ".join(args.name)
 
-    print("Board labels:")
+    # Get id's for the labels
     board_labels = trello.get_board_labels(BOARD)
-    pp.pprint(board_labels)
     card_label_ids, invalid_labels = validate_labels(args.labels, board_labels)
-    print("Invalid labels:", invalid_labels)
-    print("Valid label ids:", card_label_ids)
     if len(invalid_labels)>0:
         sys.stderr.write("Error: Invalid label(s) %s specified\n" %(
             ','.join(invalid_labels)))
         sys.exit(1)
 
-    #print("\nBoard Lists:")
+    # Select list to add the card to
     board_lists = trello.get_board_lists(BOARD)
-    #pp.pprint(board_lists)
-
-    print("\nSelected list:")
     if (args.column < 1) or args.column > len(board_lists)-1:
         sys.stderr.write("Error: Invalid list index %d\n" %(args.column))
         sys.exit(1)
     target_list = board_lists[args.column]
-    pp.pprint(target_list)
 
     # Add the card
-    print("\nAdding a card:")
     assert('id' in target_list.keys())
     card = trello.add_card(
         target_list['id'],
-        "A New Card",
-        desc="This is a description for our new card.",
+        card_name,
+        desc=None,
         pos="bottom",
         labels=",".join(card_label_ids))
+
+    # Display card data:
     pp.pprint(card)

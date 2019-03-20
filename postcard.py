@@ -62,14 +62,19 @@ if __name__ == "__main__":
     board_lists = trello.get_board_lists(BOARD)
     pp.pprint(board_lists)
 
-    print("\nSecond list:")
-    list_2 = board_lists[1]
-    pp.pprint(list_2)
+    print("\nSelected list:")
+    if (args.column < 1) or args.column > len(board_lists)-1:
+        sys.stderr.write("Error: Invalid list index %d\n" %(args.column))
+        sys.exit(1)
+    target_list = board_lists[args.column]
+    pp.pprint(target_list)
 
+    # Add the card
     print("\nAdding a card:")
-    assert('id' in list_2.keys())
+    assert('id' in target_list.keys())
     card = trello.add_card(
-        list_2['id'], "A New Card",
+        target_list['id'],
+        "A New Card",
         desc="This is a description for our new card.",
         pos="bottom",
         labels=",".join(args.labels))

@@ -15,12 +15,13 @@ setup(
     author           = 'Bryce Harrington',
     author_email     = 'bryce@ubuntu.com',
     description      = 'Inserts data to Trello.com boards',
+    long_description = open('README.md', 'rt').read(),
     platforms        = ['any'],
     requires         = ['argparse', 'ruamel', 'pprint'],
     packages         = [
         'postcard'
         ],
-    package_data = { },
-    data_files = [ ],
-    scripts = glob.glob('scripts/*'),
+    package_data     = { },
+    data_files       = [ ],
+    scripts          = [ "bin/postcard" ],
 )

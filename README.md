@@ -6,3 +6,17 @@ To generate an oauth token, visit this URL:
 
 Then click the Allow button
 
+
+## Testing
+
+$ python setup.py check
+
+
+## Installation
+
+$ sudo python setup.py install
+
+
+## Packaging
+
+$ python setup.py sdist

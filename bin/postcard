@@ -7,11 +7,17 @@ sys.path.insert(0, os.path.realpath(
 
 from ruamel import yaml
 from postcard.trello import Trello
+from postcard.auth import get_access_token
+
 
 def load_yaml(filename):
     with open(filename, 'r') as f:
         data = yaml.safe_load(f)
     return data
+
+def save_yaml(filename, data):
+    with open(filename, 'w') as f:
+        yaml.dump(data, f)
 
 def get_id_for_label(label, acceptable_labels):
     '''Checks label is a valid name, color, or label id.
@@ -60,6 +66,10 @@ if __name__ == "__main__":
 
     # Option handling
     parser = argparse.ArgumentParser(description='Posts cards to a Trello.com kanban board')
+    parser.add_argument('-A', '--oauth',
+                        type=str, dest='oauth_filename', action='store',
+                        default="~/.config/postcard/oauth.yml",
+                        help="Location of config file")
     parser.add_argument('-C', '--config',
                         type=str, dest='config_filename', action='store',
                         default="~/.config/postcard/config.yml",
@@ -88,7 +98,36 @@ if __name__ == "__main__":
         sys.stderr.write("Error: api_key value missing in %s\n" %(args.config_filename))
         sys.exit(1)
 
-    trello = Trello(config['api_key'], config['oauth_token'])
+    # Credentials
+    oauth_path = os.path.expanduser(args.oauth_filename)
+    try:
+        oauth = load_yaml(oauth_path)
+    except:
+        oauth = None
+    if oauth is None or 'oauth_token' not in oauth.keys():
+        oauth = None
+
+    # Attempt to create trello client using cached oauth credentials
+    trello = None
+    if oauth is not None:
+        # We have a cached oauth token, let's try using it
+        try:
+            trello = Trello(config['api_key'], oauth['oauth_token'])
+        except:
+            # No good, may need to re-auth
+            pass
+
+    # Attempt again to create trello client, this time using fresh oauth credentials
+    if trello is None:
+        oauth = get_access_token(config['api_key'], config['api_secret'], "read,write", "postcard")
+        assert('oauth_token' in oauth.keys())
+        save_yaml(oauth_path, oauth)
+        trello = Trello(config['api_key'], oauth['oauth_token'])
+
+    # Failure (maybe we weren't able to authorize?)
+    if trello is None:
+        sys.stderr.write("Error: Could not establish connection to Trello.com\n")
+        sys.exit(1)
 
     # Board
     m = re.match("^https://trello.com/b/([^/]*)/.*$", args.board)

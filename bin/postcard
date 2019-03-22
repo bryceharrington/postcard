@@ -56,6 +56,21 @@ def validate_labels(labels, acceptable_labels):
                 card_label_ids.append(label_id)
     return card_label_ids, invalid_labels
 
+def read_multiline():
+    reading = True
+    description = ''
+    while reading:
+        try:
+            line = input()
+            if line == '':
+                reading = False
+            else:
+                description += "\n" + line
+        except:
+            print('Invalid entry')
+            reading = True
+    return description
+
 if __name__ == "__main__":
     import os.path
     import sys
@@ -158,14 +173,19 @@ if __name__ == "__main__":
         sys.exit(1)
     target_list = board_lists[args.column]
 
+    # Gather the description text from the user
+    print("\nCard description (end with blank line):\n")
+    description = read_multiline()
+
     # Add the card
     assert('id' in target_list.keys())
     card = trello.add_card(
         target_list['id'],
         card_name,
-        desc=None,
+        desc=description,
         pos="bottom",
         labels=",".join(card_label_ids))
 
     # Display card data:
-    pp.pprint(card)
+    print("Card added: %s" %(card['url']))
+    

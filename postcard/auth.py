@@ -27,7 +27,7 @@ def get_access_token(api_key, api_secret, scope, app_name):
     reading = True
     while reading:
         try:
-            code = input('\n\nEnter the verification code from Trello: ')
+            code = input('\n\nEnter the verification code from Trello:\n')
             reading = False
         except:
             print('Invalid entry')

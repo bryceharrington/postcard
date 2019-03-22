@@ -1,6 +1,9 @@
 Posts cards to Trello.com
 
-Prerequisites: python3-requests-oauthlib
+## Prerequisites:
+
+python3-ruamel.yaml
+python3-requests-oauthlib
 
 
 ## Testing

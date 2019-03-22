@@ -17,7 +17,7 @@ setup(
     description      = 'Inserts data to Trello.com boards',
     long_description = open('README.md', 'rt').read(),
     platforms        = ['any'],
-    requires         = ['argparse', 'ruamel', 'pprint'],
+    requires         = ['argparse', 'ruamel'],
     packages         = [
         'postcard'
         ],

@@ -76,8 +76,6 @@ if __name__ == "__main__":
     import sys
     import re
     import argparse
-    import pprint
-    pp = pprint.PrettyPrinter(indent=4)
 
     # Option handling
     parser = argparse.ArgumentParser(description='Posts cards to a Trello.com kanban board')

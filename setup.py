@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 from distutils.core import setup
 from distutils.command.install_data import install_data

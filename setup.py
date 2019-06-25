@@ -1,28 +1,23 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from distutils.core import setup
-from distutils.command.install_data import install_data
-from subprocess import call
-
-import glob
-import os
-import re
+from setuptools import setup
 
 setup(
     name             = 'postcard',
     version          = '0.1',
     url              = 'none',
     author           = 'Bryce Harrington',
-    author_email     = 'bryce@ubuntu.com',
+    author_email     = 'bryce@bryceharrington.org',
     description      = 'Inserts data to Trello.com boards',
     long_description = open('README.md', 'rt').read(),
     platforms        = ['any'],
-    requires         = ['argparse', 'ruamel'],
-    packages         = [
-        'postcard'
-        ],
+    requires         = ['argparse',
+                        'ruamel',
+                        'requests',
+                        'requests_oauthlib'],
+    packages         = ['postcard'],
     package_data     = { },
     data_files       = [ ],
-    scripts          = [ "scripts/postcard" ],
+    scripts          = ['scripts/postcard'],
 )

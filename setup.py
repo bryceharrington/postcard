@@ -20,4 +20,6 @@ setup(
     package_data     = { },
     data_files       = [ ],
     scripts          = ['scripts/postcard'],
+
+    tests_require    = ['pytest'],
 )

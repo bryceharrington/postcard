@@ -13,6 +13,12 @@ These data items can be obtained from trello.com, here:
 
   https://trello.com/app-key/
 
+The Key is shown in a grey box towards the top of the page, the Secret
+is in a grey box at the bottom of the page under the OAuth header.
+
+On first invocation of the script, you'll also be prompted to add an
+authorization Token.
+
 
 ## Usage Examples
 

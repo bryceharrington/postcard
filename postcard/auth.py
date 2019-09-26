@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from requests_oauthlib import OAuth1Session
 
 # The Trello API supports basic OAuth 1.0; you can use an OAuth library and the following URLs:
@@ -41,13 +39,3 @@ def get_access_token(api_key, api_secret, scope, app_name):
         resource_owner_secret=token_secret,
         verifier=code)
     return session.fetch_access_token('https://trello.com/1/OAuthGetAccessToken')
-
-
-if __name__ == "__main__":
-    API_KEY = '8c3667cb97137b330d237f43ffd96c47'
-    SECRET  = 'abd1aed16d4b645ea658de620f8e7a9b133c512390e7bfdc2125e59a84936c16'
-    SCOPE   = 'read,write'
-    NAME    = 'postcard'
-
-    access_token = get_access_token(API_KEY, SECRET, SCOPE, NAME)
-    print("Access token: %s" %(access_token))

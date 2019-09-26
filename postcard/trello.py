@@ -46,10 +46,13 @@ class Trello:
         return self.retrieve_json("boards/%s" %(board_id), "fields=%s" %(','.join(fields)))
 
     def get_board_labels(self, board_id):
-        return self.retrieve_json("boards/%s/labels" %(board_id), "fields=all")
+        data = self.retrieve_json("boards/%s/labels" %(board_id), "fields=all")
+        return data or []
 
     def get_board_lists(self, board_id, sort_by="pos", reverse=False):
         board_lists = self.retrieve_json("boards/%s/lists" %(board_id), "fields=all")
+        if board_lists is None:
+            return []
         if len(board_lists) < 2:
             return board_lists
         if sort_by is None:
@@ -60,7 +63,8 @@ class Trello:
         return sorted(board_lists, key=lambda k: k[sort_by], reverse=reverse)
 
     def get_list(self, list_id):
-        return self.retrieve_json("lists/%s" %(board_id), "fields=all")
+        data = self.retrieve_json("lists/%s" %(board_id), "fields=all")
+        return data or []
 
     def add_card(self, list_id, name, desc="", pos="top", labels=None):
         card = {

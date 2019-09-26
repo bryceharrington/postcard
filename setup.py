@@ -23,5 +23,5 @@ setup(
         ],
     package_data     = { },
     data_files       = [ ],
-    scripts          = [ "bin/postcard" ],
+    scripts          = [ "scripts/postcard" ],
 )

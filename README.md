@@ -56,16 +56,16 @@ python3-requests-oauthlib
 
 ## Testing
 
-$ python setup.py check
+$ python3 setup.py check
 
 
 ## Installation
 
-$ sudo python setup.py install
+$ sudo python3 setup.py install
 
 
 ## Packaging
 
-$ python setup.py sdist
+$ python3 setup.py sdist
 
 
